@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Selamat Jalan, Dindin 💙</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&family=Playfair+Display:ital,wght@1,600&display=swap" rel="stylesheet">
+  
+  <style>
+    :root { --primary: #4a7fb5; --soft: #eaf2fa; }
+    body { font-family: 'Poppins', sans-serif; background: var(--soft); color: #2c3e50; overflow-x: hidden; }
+
+    /* ====== BINTANG JATUH (HERO) ====== */
+    .hero {
+      min-height: 100vh; background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+      color: white; display: flex; align-items: center; text-align: center;
+      position: relative; overflow: hidden; padding: 20px;
+    }
+    .stars-bg {
+      position: absolute; width: 100%; height: 100%;
+      background-image: radial-gradient(1px 1px at 20px 30px, #fff, rgba(0,0,0,0)), radial-gradient(1px 1px at 40px 70px, #fff, rgba(0,0,0,0)), radial-gradient(1px 1px at 50px 160px, #fff, rgba(0,0,0,0)), radial-gradient(1px 1px at 90px 40px, #fff, rgba(0,0,0,0)), radial-gradient(1px 1px at 130px 80px, #fff, rgba(0,0,0,0));
+      background-repeat: repeat; background-size: 200px 200px; opacity: 0.6;
+    }
+    .shooting-star {
+      position: absolute; top: -10px; width: 4px; height: 4px; background: #fff;
+      border-radius: 50%; box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.8);
+      animation: shoot 4s linear infinite; opacity: 0;
+    }
+    .shooting-star::after {
+      content: ''; position: absolute; top: 50%; right: 0; width: 100px; height: 1px;
+      background: linear-gradient(to left, #fff, transparent); transform: translateY(-50%);
+    }
+    .shooting-star:nth-child(1) { left: 10%; animation-delay: 0s; }
+    .shooting-star:nth-child(2) { left: 40%; animation-delay: 1.5s; animation-duration: 5s; }
+    .shooting-star:nth-child(3) { left: 70%; animation-delay: 3s; animation-duration: 3.5s; }
+    .shooting-star:nth-child(4) { left: 85%; animation-delay: 2s; animation-duration: 6s; }
+    @keyframes shoot {
+      0% { transform: translateX(0) translateY(0) rotate(-45deg); opacity: 1; }
+      100% { transform: translateX(-300px) translateY(300px) rotate(-45deg); opacity: 0; }
+    }
+
+    .hero h1 {
+      font-family: 'Playfair Display', serif; font-style: italic;
+      font-size: clamp(2rem, 8vw, 4rem); animation: fadeUp 1.2s ease; position: relative; z-index: 2;
+    }
+    .hero p { animation: fadeUp 1.6s ease; position: relative; z-index: 2; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+    .section-title { font-family: 'Playfair Display', serif; font-style: italic; color: var(--primary); }
+    .card-soft { border: none; border-radius: 20px; box-shadow: 0 8px 30px rgba(74,127,181,0.15); }
+    .countdown-box { background: white; border-radius: 16px; padding: 20px 10px; text-align: center; box-shadow: 0 4px 20px rgba(74,127,181,0.15); }
+    .countdown-box .num { font-size: 2rem; font-weight: 700; color: var(--primary); }
+    
+    footer { background: #2c3e50; color: #cbd6e2; padding: 30px 0; text-align: center; }
+    .heart { color: #e74c3c; animation: beat 1.4s infinite; display: inline-block; }
+    @keyframes beat { 0%,100%{transform:scale(1);} 50%{transform:scale(1.2);} }
+
+    /* ====== PETA PESAWAT (RESPONSIVE) ====== */
+    #flight-section { background: #fff; padding: 40px 0; }
+    .map-wrap {
+      position: relative; max-width: 1000px; margin: 0 auto;
+      border-radius: 24px; overflow: hidden;
+      box-shadow: 0 20px 60px rgba(10,35,66,0.2);
+      /* Default untuk Desktop */
+      aspect-ratio: 1024 / 581;
+      border: 4px solid #fff;
+      background-image: url('peta.jpg');
+      background-size: cover; background-position: center;
+    }
+    
+    /* Penyesuaian Peta untuk Layar HP */
+    @media (max-width: 768px) {
+      .map-wrap {
+        aspect-ratio: 4 / 5; /* Di HP, peta dibuat agak kotak/vertikal */
+        background-size: cover;
+        background-position: center;
+      }
+    }
+    
+    .map-wrap svg { width: 100%; height: 100%; display: block; position: absolute; top: 0; left: 0; z-index: 1; }
+
+    /* TEKS POP-UP TIBA DI MALAYSIA (RESPONSIVE) */
+    #arrivalText {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      font-style: italic;
+      font-size: 4rem; /* Ukuran Desktop */
+      color: #e74c3c;
+      text-shadow: 2px 2px 0 #fff, -2px -2px 0 #fff, 2px -2px 0 #fff, -2px 2px 0 #fff, 0 10px 20px rgba(0,0,0,0.3);
+      z-index: 20;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+      text-align: center;
+      line-height: 1.1;
+    }
+    /* Ukuran Teks di HP */
+    @media (max-width: 768px) {
+      #arrivalText {
+        font-size: 2.2rem;
+      }
+    }
+    #arrivalText.show {
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 1;
+    }
+
+    /* GAYA UNTUK FOTO HTML */
+    #photoWrapper {
+      position: absolute;
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      border: 3px solid #fff;
+      background-color: #fff;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+      z-index: 10;
+      opacity: 0; 
+      pointer-events: none;
+      left: 0; top: 0; 
+      transform: translate(-50%, -50%);
+      overflow: hidden;
+      transition: opacity 0.5s ease;
+    }
+    @media (max-width: 768px) {
+      #photoWrapper { width: 40px; height: 40px; border: 2px solid #fff; } /* Foto lebih kecil di HP */
+    }
+    #photoWrapper img {
+      width: 100%; height: 100%; object-fit: cover;
+    }
+
+    #plane { filter: drop-shadow(0 4px 8px rgba(0,0,0,0.4)); transition: opacity 0.5s ease; }
+    #plane path { fill: #fff; stroke: #2c3e50; stroke-width: 1.5; }
+
+    #routePath {
+      stroke: #e74c3c; stroke-width: 4; fill: none; stroke-dasharray: 12 10;
+      opacity: 0.9; animation: dash 1s linear infinite; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+    }
+    @keyframes dash { to { stroke-dashoffset: -22; } }
+    #trail { stroke: rgba(231, 76, 60, 0.7); stroke-width: 4; fill: none; stroke-linecap: round; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); }
+
+    /* EFEK LEDAKAN CAHAYA */
+    #glowPulse {
+      opacity: 0;
+      transform-origin: 735px 275px;
+    }
+    .glow-active { animation: glowExplode 1.5s ease-out forwards; }
+    @keyframes glowExplode {
+      0% { transform: scale(0.1); opacity: 1; }
+      50% { opacity: 1; }
+      100% { transform: scale(4); opacity: 0; }
+    }
+
+    .flight-controls { text-align: center; margin-top: 24px; }
+    .btn-fly {
+      background: linear-gradient(135deg, #4a7fb5, #7ba7d4); color: #fff;
+      border: none; padding: 12px 32px; border-radius: 50px; font-weight: 600;
+      box-shadow: 0 8px 24px rgba(74,127,181,0.4); transition: transform .2s, box-shadow .2s;
+      width: 100%; max-width: 300px; /* Tombol full width di HP */
+    }
+    .btn-fly:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(74,127,181,0.55); color:#fff; }
+    .btn-fly:disabled { opacity: .5; cursor: not-allowed; }
+
+    .flight-status { margin-top: 16px; font-size: 14px; color: #4a7fb5; font-weight: 600; min-height: 22px; transition: opacity .3s; padding: 0 10px;}
+
+    /* ====== EFEK AMPLOP (RESPONSIVE) ====== */
+    .envelope-wrapper {
+      display: none; justify-content: center; align-items: center; flex-direction: column;
+      margin-top: 30px; cursor: pointer; animation: fadeUp 1s ease; padding: 0 15px;
+    }
+    .envelope {
+      position: relative; width: 100%; max-width: 300px; height: 200px; background-color: #f5f5f5;
+      border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); transition: transform 0.3s ease;
+    }
+    .envelope:hover { transform: translateY(-5px); }
+    .envelope::before {
+      content: ''; position: absolute; top: 0; left: 0; width: 0; height: 0;
+      border-left: 150px solid transparent; border-right: 150px solid transparent;
+      border-top: 120px solid #e0e0e0; border-radius: 10px 10px 0 0;
+      transition: transform 0.6s ease; transform-origin: top; z-index: 3;
+    }
+    .envelope.open::before { transform: rotateX(180deg); z-index: 1; }
+    .envelope-letter {
+      position: absolute; top: 10px; left: 10px; width: calc(100% - 20px); height: 180px;
+      background: #fff; border-radius: 5px; z-index: 2; transition: transform 0.6s ease;
+      padding: 15px; box-shadow: 0 0 10px rgba(0,0,0,0.05); display: flex;
+      align-items: center; justify-content: center; text-align: center;
+      font-size: 12px; color: #7ba7d4;
+    }
+    .envelope.open .envelope-letter { transform: translateY(-80px); z-index: 4; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+    .envelope-heart {
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      font-size: 30px; color: #e74c3c; z-index: 5; transition: opacity 0.3s;
+    }
+    .envelope.open .envelope-heart { opacity: 0; }
+    .envelope-text { margin-top: 20px; font-weight: 600; color: #4a7fb5; font-size: 14px; text-align: center;}
+
+    .message-card-hidden { display: none; opacity: 0; transform: translateY(30px); transition: all .8s ease; }
+
+    /* Tombol Musik */
+    .music-btn {
+      position: fixed; bottom: 20px; right: 20px; width: 45px; height: 45px;
+      border-radius: 50%; background: #4a7fb5; color: white; border: none;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3); z-index: 9999;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; cursor: pointer; transition: transform 0.3s;
+    }
+    .music-btn:hover { transform: scale(1.1); }
+    .music-btn.paused { background: #95a5a6; }
+
+    /* Modal Settings */
+    .modal-content { border: none; border-radius: 24px; overflow: hidden; }
+    .modal-header { background: linear-gradient(135deg, #4a7fb5, #7ba7d4); color: white; border: none; }
+    .modal-header .btn-close { filter: invert(1); }
+    .open-modal-hint { font-size: 13px; color: #a8c8e8; margin-top: 8px; animation: pulseHint 2s infinite; }
+    @keyframes pulseHint { 0%,100% { opacity: .6; } 50% { opacity: 1; } }
+  </style>
+</head>
+<body>
+
+  <!-- Tombol Musik Global -->
+  <button class="music-btn paused" id="musicBtn" title="Play/Pause Musik">🎵</button>
+  
+  <!-- Audio Tag -->
+  <audio id="bgMusic" loop>
+    <source src="lagu.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- HERO DENGAN BINTANG JATUH -->
+  <section class="hero">
+    <div class="stars-bg"></div>
+    <div class="shooting-star"></div>
+    <div class="shooting-star"></div>
+    <div class="shooting-star"></div>
+    <div class="shooting-star"></div>
+    
+    <div class="container">
+      <h1>Selamat Jalan, Dindin</h1>
+      <p class="lead mt-3">Ke Malaysia kau pergi, Jajan Di Roodang Tetap Kunanti.</p>
+      <button class="btn btn-light mt-4 px-4 py-2 rounded-pill fw-semibold" id="openMessageBtn" style="position: relative; z-index: 10;">
+        Baca Pesanku 💌
+      </button>
+      <div class="open-modal-hint">→ klik untuk lihat perjalananmu</div>
+    </div>
+  </section>
+
+  <!-- MODAL: Peta, Pesawat, Amplop, Pesan -->
+  <div class="modal fade" id="flightModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">✈️ Perjalananmu ke Kuala Lumpur</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+        </div>
+        <div class="modal-body p-0">
+
+          <!-- PETA PESAWAT -->
+          <div id="flight-section">
+            <div class="container-fluid px-2 px-md-4 py-4">
+              
+              <div class="map-wrap">
+                <!-- TEKS TIBA DI MALAYSIA -->
+                <div id="arrivalText">Tiba di<br>Malaysia!</div>
+
+                <!-- FOTO HTML -->
+                <div id="photoWrapper">
+                  <img src="cewek.jpeg" alt="Foto">
+                </div>
+
+                <svg id="flightMap" viewBox="0 0 1024 581" preserveAspectRatio="xMidYMid meet">
+                  <!-- Efek Ledakan Cahaya (Glow) -->
+                  <circle id="glowPulse" cx="735" cy="275" r="40" fill="none" stroke="#f1c40f" stroke-width="15" />
+
+                  <path id="routePath" d="M 305,225 Q 512,130 735,275" style="opacity:0; transition: opacity .5s;"/>
+                  <path id="trail" d="" />
+
+                  <g id="planeGroup">
+                    <g id="plane">
+                      <path d="M0,-18 L6,-6 L18,0 L6,6 L0,18 L-6,6 L-18,0 L-6,-6 Z" />
+                    </g>
+                  </g>
+                </svg>
+              </div>
+
+              <!-- Kontrol -->
+              <div class="flight-controls">
+                <button class="btn-fly" id="flyBtn">🚀 Mulai Perjalanan</button>
+                <div class="flight-status" id="flightStatus">Siap berangkat dari Medan City...</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- AREA AMPLOP -->
+          <div class="container px-3 pb-5 d-flex justify-content-center">
+            <div class="envelope-wrapper" id="envelopeWrapper">
+              <div class="envelope" id="envelope">
+                <div class="envelope-heart">❤️</div>
+                <div class="envelope-letter">Klik untuk membuka...</div>
+              </div>
+              <div class="envelope-text">💌 Ketuk Amplopnya untuk membaca pesan</div>
+            </div>
+          </div>
+
+          <!-- PESAN ASLI -->
+          <div class="container px-3 pb-4">
+            <div class="card card-soft p-4 p-md-5 message-card-hidden" id="messageCard">
+              <p>Hai Dindin,</p>
+              <p>Pesawatmu mengudara dari Medan menuju Kuala Lumpur. Aku bayangkan kau di jendela pesawat, menatap awan, mungkin sedikit gugup, mungkin juga excited.</p>
+              <p>Cak Tengok Nanti Ke Bawah.. Ada Aku..  Bukan Di Bandara, Tapi di Pikiranmu (Asekk..😂). Jarak 350 km itu bukan apa-apa dibanding doa yang berani aku lantangkan (gaya Kali kan..😂).</p>
+              <p>Belajarlah dengan baik, jaga kesehatan, jangan lupa makan. Kalau rindu,Eceknya telepon aku😂. Kalau Lelah, Cerita Ke Aku Jugaa. 😂</p>
+              <p class="mb-0"><strong>— Dari Sang Imigran Surga 💙</strong></p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION COUNTDOWN -->
+  <section class="py-4 py-md-5">
+    <div class="container text-center px-3">
+      <h2 class="section-title mb-4">Menghitung Hari</h2>
+      <p class="text-muted mb-4">Menuju hari keberangkatanmu ke Malaysia...</p>
+      <div class="row justify-content-center g-2 g-md-3" id="countdown">
+        <div class="col-6 col-md-3"><div class="countdown-box"><div class="num" id="days">0</div><small>Hari</small></div></div>
+        <div class="col-6 col-md-3"><div class="countdown-box"><div class="num" id="hours">0</div><small>Jam</small></div></div>
+        <div class="col-6 col-md-3"><div class="countdown-box"><div class="num" id="mins">0</div><small>Menit</small></div></div>
+        <div class="col-6 col-md-3"><div class="countdown-box"><div class="num" id="secs">0</div><small>Detik</small></div></div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container px-3">
+      <p class="mb-1">Dibuat dengan <span class="heart">❤</span> untukmu🤭🤗🤣</p>
+      <p class="small mb-0">— Dari Manusia, Penghuni Bumi, Imigran Surga.</p>
+    </div>
+  </footer>
+
+  <!-- Library Confetti & Bootstrap -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <script>
+    window.addEventListener('load', function() {
+      
+      /* ================= MUSIK ================= */
+      const music = document.getElementById('bgMusic');
+      const musicBtn = document.getElementById('musicBtn');
+
+      musicBtn.addEventListener('click', function() {
+        if (music.paused) {
+          music.play().then(() => {
+            musicBtn.classList.remove('paused');
+            musicBtn.innerHTML = '🎵';
+          }).catch(e => console.log("Audio error:", e));
+        } else {
+          music.pause();
+          musicBtn.classList.add('paused');
+          musicBtn.innerHTML = '🔇';
+        }
+      });
+
+      /* ================= COUNTDOWN ================= */
+      const target = new Date(2026, 10, 5, 15, 0, 0).getTime(); // 5 Nov 2026, 15:00
+
+      setInterval(() => {
+        const now = new Date().getTime();
+        const diff = target - now;
+        
+        if (diff < 0) {
+          document.getElementById('days').textContent  = '0';
+          document.getElementById('hours').textContent = '0';
+          document.getElementById('mins').textContent  = '0';
+          document.getElementById('secs').textContent  = '0';
+          return;
+        }
+        
+        document.getElementById('days').textContent  = Math.floor(diff / (1000*60*60*24));
+        document.getElementById('hours').textContent = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
+        document.getElementById('mins').textContent  = Math.floor((diff % (1000*60*60)) / (1000*60));
+        document.getElementById('secs').textContent  = Math.floor((diff % (1000*60)) / 1000);
+      }, 1000);
+
+      /* ================= ANIMASI PESAWAT & FOTO ================= */
+      const modal      = new bootstrap.Modal(document.getElementById('flightModal'));
+      const openBtn    = document.getElementById('openMessageBtn');
+      const flyBtn     = document.getElementById('flyBtn');
+      const statusEl   = document.getElementById('flightStatus');
+      const planeGroup = document.getElementById('planeGroup');
+      const plane      = document.getElementById('plane');
+      const photoWrapper = document.getElementById('photoWrapper');
+      const trail      = document.getElementById('trail');
+      const routePath  = document.getElementById('routePath');
+      
+      const arrivalText = document.getElementById('arrivalText');
+      const glowPulse   = document.getElementById('glowPulse');
+      const envelopeWrapper = document.getElementById('envelopeWrapper');
+      const envelope   = document.getElementById('envelope');
+      const messageCard= document.getElementById('messageCard');
+
+      const start = { x: 305, y: 225 }; 
+      const ctrl  = { x: 512, y: 130 }; 
+      const end   = { x: 735, y: 275 };
+
+      function bezier(t){
+        const mt = 1 - t;
+        const x = mt*mt*mt*start.x + 3*mt*mt*t*ctrl.x + 3*mt*t*t*ctrl.x + t*t*t*end.x;
+        const y = mt*mt*mt*start.y + 3*mt*mt*t*ctrl.y + 3*mt*t*t*ctrl.y + t*t*t*end.y;
+        return { x, y };
+      }
+
+      function angleAt(t){
+        const p1 = bezier(t);
+        const p2 = bezier(Math.min(t + 0.001, 1));
+        return Math.atan2(p2.y - p1.y, p2.x - p1.x) * 180 / Math.PI + 90;
+      }
+
+      let trailD = '';
+
+      function animateFlight(duration = 6000){
+        flyBtn.disabled = true;
+        planeGroup.setAttribute('opacity', 1);
+        plane.style.opacity = 1;
+        photoWrapper.style.opacity = 1;
+        routePath.style.opacity = 0.9;
+        trailD = '';
+        trail.setAttribute('d', '');
+        
+        arrivalText.classList.remove('show');
+        glowPulse.classList.remove('glow-active');
+        glowPulse.style.opacity = 0;
+
+        envelopeWrapper.style.display = 'none';
+        messageCard.style.display = 'none';
+        messageCard.style.opacity = 0;
+        envelope.classList.remove('open');
+        envelope.querySelector('.envelope-letter').textContent = 'Klik untuk membuka...';
+
+        if (music.paused) {
+          music.play().then(() => {
+            musicBtn.classList.remove('paused');
+            musicBtn.innerHTML = '🎵';
+          }).catch(e => console.log("Autoplay dicegah browser."));
+        }
+
+        const t0 = performance.now();
+
+        function frame(now){
+          const t = Math.min((now - t0) / duration, 1);
+          const eased = t < 0.5 ? 2*t*t : 1 - Math.pow(-2*t+2, 2)/2;
+
+          const pos = bezier(eased);
+          const ang = angleAt(eased);
+
+          planeGroup.setAttribute('transform', `translate(${pos.x}, ${pos.y}) rotate(${ang})`);
+
+          const leftPercent = (pos.x / 1024) * 100;
+          const topPercent = ((pos.y - 20) / 581) * 100; 
+          
+          photoWrapper.style.left = leftPercent + '%';
+          photoWrapper.style.top = topPercent + '%';
+
+          trailD = '';
+          const steps = 30;
+          for (let i = 0; i <= steps * eased; i++){
+            const p = bezier(i / steps);
+            trailD += (i === 0 ? 'M' : 'L') + p.x + ',' + p.y + ' ';
+          }
+          trail.setAttribute('d', trailD);
+
+          if (t < 0.15)      statusEl.textContent = '🛫 Lepas landas dari Medan City...';
+          else if (t < 0.45) statusEl.textContent = '✈️ Melewati Selat Malaka...';
+          else if (t < 0.8)  statusEl.textContent = '🌊 Mendekati perairan Malaysia...';
+          else               statusEl.textContent = '🛬 Bersiap mendarat di Kuala Lumpur...';
+
+          if (t < 1){
+            requestAnimationFrame(frame);
+          } else {
+            statusEl.textContent = '🎉 Selamat datang di Kuala Lumpur!';
+            flyBtn.disabled = false;
+            flyBtn.textContent = '🔁 Ulangi Perjalanan';
+
+            plane.style.opacity = 0;
+            photoWrapper.style.opacity = 0;
+
+            glowPulse.style.opacity = 1;
+            glowPulse.classList.add('glow-active');
+
+            setTimeout(() => {
+              arrivalText.classList.add('show');
+            }, 300);
+
+            // Kembang Api
+            let durationFw = 3000;
+            let animationEnd = Date.now() + durationFw;
+            let defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+            function randomInRange(min, max) {
+              return Math.random() * (max - min) + min;
+            }
+
+            let interval = setInterval(function() {
+              let timeLeft = animationEnd - Date.now();
+
+              if (timeLeft <= 0) {
+                return clearInterval(interval);
+              }
+
+              let particleCount = 50 * (timeLeft / durationFw);
+              confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
+              confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
+            }, 250);
+
+            setTimeout(() => {
+              envelopeWrapper.style.display = 'flex';
+            }, 1500);
+          }
+        }
+        requestAnimationFrame(frame);
+      }
+
+      envelope.addEventListener('click', () => {
+        envelope.classList.add('open');
+        envelope.querySelector('.envelope-letter').innerHTML = '<strong>💌 Surat terbuka!</strong><br>Lihat di bawah...';
+        setTimeout(() => {
+          messageCard.style.display = 'block';
+          void messageCard.offsetWidth; 
+          messageCard.style.opacity = 1;
+          messageCard.style.transform = 'translateY(0)';
+        }, 600);
+      });
+
+      openBtn.addEventListener('click', () => {
+        modal.show();
+        planeGroup.setAttribute('opacity', 0);
+        photoWrapper.style.opacity = 0;
+        trail.setAttribute('d', '');
+        routePath.style.opacity = 0;
+        statusEl.textContent = 'Siap berangkat dari Medan City...';
+        flyBtn.disabled = false;
+        flyBtn.textContent = '🚀 Mulai Perjalanan';
+        envelopeWrapper.style.display = 'none';
+        messageCard.style.display = 'none';
+        arrivalText.classList.remove('show');
+      });
+
+      flyBtn.addEventListener('click', () => animateFlight(6000));
+    });
+  </script>
+</body>
+</html>
